@@ -1,4 +1,10 @@
 const r = require("raylib");
+const board = [
+    [null, null, null],
+    [null, null, null],
+    [null, null, null],
+];
+let currentPlayer = "X";
 
 function setup() {
     r.SetTraceLogLevel(r.LOG_NONE);
@@ -22,13 +28,27 @@ function drawGrid() {
     }
 }
 
+function drawXO(row, column, symbol) {
+    const x = 10 + column * 190 + 90;
+    const y = 10 + row * 190 + 90;
+
+    r.DrawText(symbol, x, y, 60, r.BLACK);
+}
+
 function draw() {
     while (!r.WindowShouldClose()) {
         r.BeginDrawing();
         r.ClearBackground(r.LIGHTGRAY);
         drawGrid();
+        for (let row = 0; row < 3; row++) {
+            for (let column = 0; column < 3; column++) {
+                if (board[row][column] !== null) {
+                    drawXO(row, column, board[row][column]);
+                }
+            }
+        }
+
         if (r.IsMouseButtonPressed(r.MOUSE_BUTTON_LEFT)) {
-            console.log("mouse Pressed:");
             if (
                 r.GetMouseX() >= 20 &&
                 r.GetMouseX() < 580 &&
@@ -37,10 +57,15 @@ function draw() {
             ) {
                 const column = Math.floor((r.GetMouseX() - 20) / 190);
                 const row = Math.floor((r.GetMouseY() - 20) / 190);
-
-                console.log(column, row);
+                board[row][column] = currentPlayer;
+                if (currentPlayer === "X") {
+                    currentPlayer = "O";
+                } else {
+                    currentPlayer = "X";
+                }
             }
         }
+
         r.EndDrawing();
     }
 }
